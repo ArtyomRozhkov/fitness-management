@@ -1,1 +1,10 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /fitness-management
 
+spring:
+  application:
+    name: @project.name@
+  jpa:
+    open-in-view: false

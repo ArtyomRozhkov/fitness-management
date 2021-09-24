@@ -1,0 +1,2 @@
+### Health
+GET http://{{app-host}}:{{app-port}}/fitness-management/actuator/health
