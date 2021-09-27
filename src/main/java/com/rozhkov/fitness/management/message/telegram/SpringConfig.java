@@ -16,7 +16,7 @@ public class SpringConfig {
 
     @Bean
     public LongPollingBot telegramBot() {
-        return new TelegramBot(telegramBotName, telegramBotToken);
+        return new TelegramBotHandler(telegramBotName, telegramBotToken);
     }
 
 }
