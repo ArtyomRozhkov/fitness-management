@@ -23,12 +23,11 @@ public class StartMessageHandler extends BaseMessageHandler {
 
     @Override
     protected SendMessage handle(Message message) {
-        SendMessage replyMessage = new SendMessage();
-        replyMessage.setChatId(message.getChatId().toString());
-        replyMessage.setText("Привет " + message.getFrom().getFirstName());
-        replyMessage.setReplyMarkup(createCommonReplyKeyboard());
-
-        return replyMessage;
+        return SendMessage.builder()
+                .chatId(message.getChatId().toString())
+                .text("Привет " + message.getFrom().getFirstName())
+                .replyMarkup(createCommonReplyKeyboard())
+                .build();
     }
 
     public ReplyKeyboardMarkup createCommonReplyKeyboard() {

@@ -24,12 +24,11 @@ public class RemoveTrainingRecordCallbackHandler extends BaseCallbackHandler {
 
     @Override
     protected SendMessage handle(Callback callback) {
-        SendMessage replyMessage = new SendMessage();
-        replyMessage.setChatId(callback.getChatId());
-        replyMessage.setText(Action.REMOVED_TRAINING_RECORD.getCaption());
-        replyMessage.setReplyMarkup(createInlineReplyTrainingList());
-
-        return replyMessage;
+        return SendMessage.builder()
+                .chatId(callback.getChatId())
+                .text(Action.REMOVE_TRAINING_RECORD.getCaption())
+                .replyMarkup(createInlineReplyTrainingList())
+                .build();
     }
 
     private InlineKeyboardMarkup createInlineReplyTrainingList() {
@@ -39,7 +38,7 @@ public class RemoveTrainingRecordCallbackHandler extends BaseCallbackHandler {
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         for (String training : trainingList) {
             List<InlineKeyboardButton> row = new ArrayList<>();
-            String callbackQueryData = callbackQueryDataProcessor.createCallbackQueryData(Action.REMOVED_TRAINING_RECORD);
+            String callbackQueryData = callbackQueryDataProcessor.createCallbackQueryData(Action.REMOVED_TRAINING_RECORD, training);
             row.add(createInlineButton(training, callbackQueryData));
             rowsInline.add(row);
         }

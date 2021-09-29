@@ -22,23 +22,22 @@ public class SpringConfig {
     public MessageHandler messageHandler() {
         return new StartMessageHandler(
                 new ShowTodayTimetableMessageHandler(
-                        new SignUpForTrainingMessageHandler(
+                        new SignUpForTrainingMessageHandler(callbackQueryDataProcessor(),
                                 new ShowWeekTimetableMessageHandler(
-                                        new ShowMyTrainingRecordMessageHandler(
-                                                new UnsupportedMessageHandler(),
-                                                callbackQueryDataProcessor())
-                                ),
-                                callbackQueryDataProcessor())
+                                        new ShowMyTrainingRecordMessageHandler(callbackQueryDataProcessor(),
+                                                new UnsupportedMessageHandler())
+                                )
+                        )
                 )
         );
     }
 
     @Bean
     public CallbackHandler callbackHandler() {
-        return new ChooseDateForTrainingCallbackHandler(
-                callbackQueryDataProcessor(),
-                new ChooseTrainingCallbackHandler(
-                        new RemoveTrainingRecordCallbackHandler(callbackQueryDataProcessor(), null)
+        return new ChosenDateForTrainingCallbackHandler(callbackQueryDataProcessor(),
+                new ChosenTrainingCallbackHandler(
+                        new RemoveTrainingRecordCallbackHandler(callbackQueryDataProcessor(),
+                                new RemovedTrainingRecordCallbackHandler(null))
                 )
         );
     }

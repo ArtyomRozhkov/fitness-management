@@ -16,9 +16,9 @@ public class UnsupportedMessageHandler extends BaseMessageHandler {
 
     @Override
     protected SendMessage handle(Message message) {
-        SendMessage replyMessage = new SendMessage();
-        replyMessage.setChatId(message.getChatId().toString());
-        replyMessage.setText("Не знаю чем могу помочь. Выберете одно из доступных действий");
-        return replyMessage;
+        return SendMessage.builder()
+                .chatId(message.getChatId().toString())
+                .text("Не знаю чем могу помочь. Выберете одно из доступных действий")
+                .build();
     }
 }

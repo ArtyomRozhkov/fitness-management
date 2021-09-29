@@ -17,7 +17,8 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
 
     private final CallbackQueryDataProcessor callbackQueryDataProcessor;
 
-    public SignUpForTrainingMessageHandler(MessageHandler nextMessageHandler, CallbackQueryDataProcessor callbackQueryDataProcessor) {
+    public SignUpForTrainingMessageHandler(CallbackQueryDataProcessor callbackQueryDataProcessor,
+                                           MessageHandler nextMessageHandler) {
         super(nextMessageHandler);
         this.callbackQueryDataProcessor = callbackQueryDataProcessor;
     }
@@ -29,31 +30,30 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
 
     @Override
     protected SendMessage handle(Message message) {
-        SendMessage replyMessage = new SendMessage();
-        replyMessage.setChatId(message.getChatId().toString());
-        replyMessage.setText(Action.CHOOSE_DATE_FOR_TRAINING.getCaption());
-        replyMessage.setReplyMarkup(createInlineReplyDatesKeyboard(Action.CHOOSE_DATE_FOR_TRAINING));
-
-        return replyMessage;
+        return SendMessage.builder()
+                .chatId(message.getChatId().toString())
+                .text(Action.CHOOSE_DATE_FOR_TRAINING.getCaption())
+                .replyMarkup(createInlineReplyDatesKeyboard(Action.CHOSEN_DATE_FOR_TRAINING))
+                .build();
     }
 
-    private InlineKeyboardMarkup createInlineReplyDatesKeyboard(Action clientAction) {
+    private InlineKeyboardMarkup createInlineReplyDatesKeyboard(Action action) {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<InlineKeyboardButton> firstRow = new ArrayList<>();
 
         LocalDate today = LocalDate.now();
-        firstRow.add(createInlineButton(clientAction, today, "Сегодня"));
+        firstRow.add(createInlineButton(action, today, "Сегодня"));
 
         LocalDate tomorrow = today.plusDays(1);
-        firstRow.add(createInlineButton(clientAction, tomorrow, "Завтра"));
+        firstRow.add(createInlineButton(action, tomorrow, "Завтра"));
         rowsInline.add(firstRow);
 
         for (int i = 1; i < 4; i++) {
             List<InlineKeyboardButton> row = new ArrayList<>();
             for (int j = 0; j < COLUMN_NUMBER; j++) {
                 LocalDate day = today.plusDays(i * COLUMN_NUMBER + j);
-                row.add(createInlineButton(clientAction, day, day.toString()));
+                row.add(createInlineButton(action, day, day.toString()));
             }
             rowsInline.add(row);
         }

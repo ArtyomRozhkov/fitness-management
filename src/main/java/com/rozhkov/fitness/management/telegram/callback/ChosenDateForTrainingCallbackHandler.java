@@ -8,11 +8,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseDateForTrainingCallbackHandler extends BaseCallbackHandler {
+public class ChosenDateForTrainingCallbackHandler extends BaseCallbackHandler {
 
     private final CallbackQueryDataProcessor callbackQueryDataProcessor;
 
-    public ChooseDateForTrainingCallbackHandler(
+    public ChosenDateForTrainingCallbackHandler(
             CallbackQueryDataProcessor callbackQueryDataProcessor, CallbackHandler nextCallbackHandler) {
         super(nextCallbackHandler);
         this.callbackQueryDataProcessor = callbackQueryDataProcessor;
@@ -20,7 +20,7 @@ public class ChooseDateForTrainingCallbackHandler extends BaseCallbackHandler {
 
     @Override
     protected boolean canHandle(Callback callback) {
-        return callback.getClientAction() == Action.CHOOSE_DATE_FOR_TRAINING;
+        return callback.getClientAction() == Action.CHOSEN_DATE_FOR_TRAINING;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ChooseDateForTrainingCallbackHandler extends BaseCallbackHandler {
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         for (String training : trainingList) {
             List<InlineKeyboardButton> row = new ArrayList<>();
-            String callbackQueryData = callbackQueryDataProcessor.createCallbackQueryData(Action.CHOOSE_TRAINING, date, training);
+            String callbackQueryData = callbackQueryDataProcessor.createCallbackQueryData(Action.CHOSEN_TRAINING, date, training);
             row.add(createInlineButton(training, callbackQueryData));
             rowsInline.add(row);
         }

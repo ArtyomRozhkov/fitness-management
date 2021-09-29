@@ -14,7 +14,8 @@ public class ShowMyTrainingRecordMessageHandler extends BaseMessageHandler {
 
     private final CallbackQueryDataProcessor callbackQueryDataProcessor;
 
-    public ShowMyTrainingRecordMessageHandler(MessageHandler nextMessageHandler, CallbackQueryDataProcessor callbackQueryDataProcessor) {
+    public ShowMyTrainingRecordMessageHandler(CallbackQueryDataProcessor callbackQueryDataProcessor,
+                                              MessageHandler nextMessageHandler) {
         super(nextMessageHandler);
         this.callbackQueryDataProcessor = callbackQueryDataProcessor;
     }
@@ -26,20 +27,22 @@ public class ShowMyTrainingRecordMessageHandler extends BaseMessageHandler {
 
     @Override
     protected SendMessage handle(Message message) {
-        SendMessage replyMessage = new SendMessage();
-        replyMessage.setChatId(message.getChatId().toString());
-        replyMessage.setText(
-                "Вы записаны на пн: \n" +
-                        "18:00 - 18:50 hot-iron \n" +
-                        "\nна вт: \n" +
-                        "18:00 - 18:50 hot-iron \n" +
-                        "\nна чт: \n" +
-                        "19:00 - 20:00 йога" +
-                        "\nна сб: \n" +
-                        "18:00 - 18:50 hot-iron");
-        replyMessage.setReplyMarkup(createInlineReplyDatesKeyboard());
+        return SendMessage.builder()
+                .chatId(message.getChatId().toString())
+                .text(getClientTraining())
+                .replyMarkup(createInlineReplyDatesKeyboard())
+                .build();
+    }
 
-        return replyMessage;
+    private String getClientTraining() {
+        return "Вы записаны на пн: \n" +
+                "18:00 - 18:50 hot-iron \n" +
+                "\nна вт: \n" +
+                "18:00 - 18:50 hot-iron \n" +
+                "\nна чт: \n" +
+                "19:00 - 20:00 йога" +
+                "\nна сб: \n" +
+                "18:00 - 18:50 hot-iron";
     }
 
     private InlineKeyboardMarkup createInlineReplyDatesKeyboard() {
