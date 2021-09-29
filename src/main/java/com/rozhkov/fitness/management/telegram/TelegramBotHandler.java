@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -40,7 +39,7 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
+        if (isMessage(update)) {
 
             Message receiveMessage = update.getMessage();
             SendMessage replyMessage = messageHandler.handleMessage(receiveMessage);
@@ -49,9 +48,13 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
         } else if (update.hasCallbackQuery()) {
 
             Callback callback = createCallback(update.getCallbackQuery());
-            BotApiMethod editedMessage = callbackHandler.handleCallback(callback);
+            BotApiMethod<?> editedMessage = callbackHandler.handleCallback(callback);
             sendReply(editedMessage);
         }
+    }
+
+    private boolean isMessage(Update update) {
+        return update.hasMessage() && update.getMessage().hasText();
     }
 
     private Callback createCallback(CallbackQuery callbackQuery) {

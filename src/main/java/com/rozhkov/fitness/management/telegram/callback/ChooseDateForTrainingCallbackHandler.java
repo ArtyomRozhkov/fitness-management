@@ -1,12 +1,10 @@
 package com.rozhkov.fitness.management.telegram.callback;
 
 import com.rozhkov.fitness.management.telegram.Action;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class ChooseDateForTrainingCallbackHandler extends BaseCallbackHandler {
     }
 
     @Override
-    protected BotApiMethod<Serializable> handle(Callback callback) {
+    protected EditMessageText handle(Callback callback) {
         return EditMessageText.builder()
                 .chatId(callback.getChatId())
                 .messageId(callback.getMessageId())
@@ -37,7 +35,7 @@ public class ChooseDateForTrainingCallbackHandler extends BaseCallbackHandler {
 
     private InlineKeyboardMarkup createInlineReplyTrainingList(String date) {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        String[] trainingList = {"йога", "cycle", "hot-iron"};
+        String[] trainingList = {"13:00 - 14:00 йога", "17:00 - 17:50 cycle", "18:00 - 18:50 hot-iron"};
 
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         for (String training : trainingList) {

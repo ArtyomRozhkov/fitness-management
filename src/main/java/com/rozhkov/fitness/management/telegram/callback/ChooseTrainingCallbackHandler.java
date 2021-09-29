@@ -1,10 +1,7 @@
 package com.rozhkov.fitness.management.telegram.callback;
 
 import com.rozhkov.fitness.management.telegram.Action;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-
-import java.io.Serializable;
 
 public class ChooseTrainingCallbackHandler extends BaseCallbackHandler {
 
@@ -18,7 +15,7 @@ public class ChooseTrainingCallbackHandler extends BaseCallbackHandler {
     }
 
     @Override
-    protected BotApiMethod<Serializable> handle(Callback callback) {
+    protected EditMessageText handle(Callback callback) {
         String trainingDate = callback.getDataParams()[0];
         String training = callback.getDataParams()[1];
         String answer = String.format("Вы записаны %s на %s", trainingDate, training);

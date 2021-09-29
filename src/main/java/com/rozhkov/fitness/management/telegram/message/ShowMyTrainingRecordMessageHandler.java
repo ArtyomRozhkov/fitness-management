@@ -31,12 +31,12 @@ public class ShowMyTrainingRecordMessageHandler extends BaseMessageHandler {
         replyMessage.setText(
                 "Вы записаны на пн: \n" +
                         "18:00 - 18:50 hot-iron \n" +
-                        "\n\nна вт: \n" +
+                        "\nна вт: \n" +
                         "18:00 - 18:50 hot-iron \n" +
-                        "\n\nна чт: \n" +
+                        "\nна чт: \n" +
                         "19:00 - 20:00 йога" +
-                        "\n\nна сб: \n" +
-                        "18:00 - 18:50 hot-iron \n");
+                        "\nна сб: \n" +
+                        "18:00 - 18:50 hot-iron");
         replyMessage.setReplyMarkup(createInlineReplyDatesKeyboard());
 
         return replyMessage;

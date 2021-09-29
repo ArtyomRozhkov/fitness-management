@@ -13,6 +13,8 @@ import java.util.List;
 
 public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
 
+    private static final int COLUMN_NUMBER = 2;
+
     private final CallbackQueryDataProcessor callbackQueryDataProcessor;
 
     public SignUpForTrainingMessageHandler(MessageHandler nextMessageHandler, CallbackQueryDataProcessor callbackQueryDataProcessor) {
@@ -49,8 +51,8 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
 
         for (int i = 1; i < 4; i++) {
             List<InlineKeyboardButton> row = new ArrayList<>();
-            for (int j = 1; j < 3; j++) {
-                LocalDate day = today.plusDays(i + j);
+            for (int j = 0; j < COLUMN_NUMBER; j++) {
+                LocalDate day = today.plusDays(i * COLUMN_NUMBER + j);
                 row.add(createInlineButton(clientAction, day, day.toString()));
             }
             rowsInline.add(row);

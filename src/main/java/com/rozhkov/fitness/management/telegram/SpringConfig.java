@@ -2,19 +2,21 @@ package com.rozhkov.fitness.management.telegram;
 
 import com.rozhkov.fitness.management.telegram.callback.*;
 import com.rozhkov.fitness.management.telegram.message.*;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.annotation.Validated;
 import org.telegram.telegrambots.meta.generics.LongPollingBot;
 
 @Configuration
 public class SpringConfig {
 
-    @Value("${telegram.bot.name}")
-    private String telegramBotName;
-
-    @Value("${telegram.bot.token}")
-    private String telegramBotToken;
+    @Bean
+    @Validated
+    @ConfigurationProperties(prefix = "telegram")
+    public TelegramProperties telegramProperties() {
+        return new TelegramProperties();
+    }
 
     @Bean
     public MessageHandler messageHandler() {
@@ -47,9 +49,9 @@ public class SpringConfig {
     }
 
     @Bean
-    public LongPollingBot telegramBot() {
+    public LongPollingBot telegramBot(TelegramProperties telegramProperties) {
         return new TelegramBotHandler(
-                telegramBotName, telegramBotToken,
+                telegramProperties.getBotName(), telegramProperties.getBotToken(),
                 messageHandler(), callbackHandler(), callbackQueryDataProcessor());
     }
 
