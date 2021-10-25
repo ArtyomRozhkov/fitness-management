@@ -8,6 +8,7 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 public abstract class BaseCallbackHandler implements CallbackHandler {
 
+    protected final CallbackHelper callbackHelper;
     private final CallbackHandler nextCallbackHandler;
 
     @Override

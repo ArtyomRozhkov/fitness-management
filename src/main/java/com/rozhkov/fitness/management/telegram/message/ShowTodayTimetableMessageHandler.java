@@ -1,6 +1,6 @@
 package com.rozhkov.fitness.management.telegram.message;
 
-import com.rozhkov.fitness.management.telegram.Action;
+import com.rozhkov.fitness.management.telegram.action.Action;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 

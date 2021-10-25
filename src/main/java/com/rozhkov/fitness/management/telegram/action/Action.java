@@ -1,5 +1,6 @@
-package com.rozhkov.fitness.management.telegram;
+package com.rozhkov.fitness.management.telegram.action;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -13,11 +14,16 @@ public enum Action {
     SING_UP_FOR_TRAINING("Хочу записаться на тренировку"),
     SHOW_MY_TRAINING_RECORDS("Покажи мои тренировки"),
     CHOOSE_DATE_FOR_TRAINING("На какой день хочешь записаться?"),
-    CHOSEN_DATE_FOR_TRAINING("На какой день хочешь записаться?"),
+    CHOSEN_DATE_FOR_TRAINING(""),
     CHOOSE_TRAINING("Выбирете тренирувку"),
-    CHOSEN_TRAINING("Выбирете тренирувку"),
+    CHOSEN_TRAINING(""),
     REMOVE_TRAINING_RECORD("Выбирете тренировку, на которую не придете"),
-    REMOVED_TRAINING_RECORD("Выбирете тренировку на которую хотите удалить запись");
+    REMOVED_TRAINING_RECORD("");
 
     private final String caption;
+
+    @JsonValue
+    public int id() {
+        return ordinal();
+    }
 }

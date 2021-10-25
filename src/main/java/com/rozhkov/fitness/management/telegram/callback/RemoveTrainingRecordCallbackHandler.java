@@ -1,25 +1,24 @@
 package com.rozhkov.fitness.management.telegram.callback;
 
-import com.rozhkov.fitness.management.telegram.Action;
+import com.rozhkov.fitness.management.telegram.action.Action;
+import com.rozhkov.fitness.management.telegram.action.RemovedTrainingRecordData;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RemoveTrainingRecordCallbackHandler extends BaseCallbackHandler {
 
-    private final CallbackQueryDataProcessor callbackQueryDataProcessor;
-
-    public RemoveTrainingRecordCallbackHandler(CallbackQueryDataProcessor callbackQueryDataProcessor, CallbackHandler nextCallbackHandler) {
-        super(nextCallbackHandler);
-        this.callbackQueryDataProcessor = callbackQueryDataProcessor;
+    public RemoveTrainingRecordCallbackHandler(CallbackHelper callbackHelper, CallbackHandler nextCallbackHandler) {
+        super(callbackHelper, nextCallbackHandler);
     }
 
     @Override
     protected boolean canHandle(Callback callback) {
-        return callback.getClientAction() == Action.REMOVE_TRAINING_RECORD;
+        return callback.getCallbackData().getClientAction() == Action.REMOVE_TRAINING_RECORD;
     }
 
     @Override
@@ -37,20 +36,14 @@ public class RemoveTrainingRecordCallbackHandler extends BaseCallbackHandler {
 
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         for (String training : trainingList) {
+            RemovedTrainingRecordData data = new RemovedTrainingRecordData()
+                    .setTraining(training);
             List<InlineKeyboardButton> row = new ArrayList<>();
-            String callbackQueryData = callbackQueryDataProcessor.createCallbackQueryData(Action.REMOVED_TRAINING_RECORD, training);
-            row.add(createInlineButton(training, callbackQueryData));
+            row.add(callbackHelper.createInlineButton(training, Action.REMOVED_TRAINING_RECORD, data));
             rowsInline.add(row);
         }
 
         markupInline.setKeyboard(rowsInline);
         return markupInline;
-    }
-
-    private InlineKeyboardButton createInlineButton(String buttonText, String callbackData) {
-        return InlineKeyboardButton.builder()
-                .text(buttonText)
-                .callbackData(callbackData)
-                .build();
     }
 }

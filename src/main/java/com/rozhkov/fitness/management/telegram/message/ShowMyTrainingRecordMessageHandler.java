@@ -1,23 +1,22 @@
 package com.rozhkov.fitness.management.telegram.message;
 
-import com.rozhkov.fitness.management.telegram.Action;
-import com.rozhkov.fitness.management.telegram.callback.CallbackQueryDataProcessor;
+import com.rozhkov.fitness.management.telegram.action.Action;
+import com.rozhkov.fitness.management.telegram.callback.CallbackData;
+import com.rozhkov.fitness.management.telegram.callback.CallbackHelper;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ShowMyTrainingRecordMessageHandler extends BaseMessageHandler {
 
-    private final CallbackQueryDataProcessor callbackQueryDataProcessor;
+    private final CallbackHelper callbackHelper;
 
-    public ShowMyTrainingRecordMessageHandler(CallbackQueryDataProcessor callbackQueryDataProcessor,
+    public ShowMyTrainingRecordMessageHandler(CallbackHelper callbackHelper,
                                               MessageHandler nextMessageHandler) {
         super(nextMessageHandler);
-        this.callbackQueryDataProcessor = callbackQueryDataProcessor;
+        this.callbackHelper = callbackHelper;
     }
 
     @Override
@@ -46,22 +45,8 @@ public class ShowMyTrainingRecordMessageHandler extends BaseMessageHandler {
     }
 
     private InlineKeyboardMarkup createInlineReplyDatesKeyboard() {
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        List<InlineKeyboardButton> firstRow = new ArrayList<>();
-
-        firstRow.add(createInlineButton(Action.REMOVE_TRAINING_RECORD, "Удалить запись"));
-        rowsInline.add(firstRow);
-
-        markupInline.setKeyboard(rowsInline);
-        return markupInline;
-    }
-
-    private InlineKeyboardButton createInlineButton(Action clientAction, String buttonText) {
-        String callbackData = callbackQueryDataProcessor.createCallbackQueryData(clientAction);
-        return InlineKeyboardButton.builder()
-                .text(buttonText)
-                .callbackData(callbackData)
+        return InlineKeyboardMarkup.builder()
+                .keyboard(List.of(List.of(callbackHelper.createInlineButton("Удалить запись", Action.REMOVE_TRAINING_RECORD))))
                 .build();
     }
 }

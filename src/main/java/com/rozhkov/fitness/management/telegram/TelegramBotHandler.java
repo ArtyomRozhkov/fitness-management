@@ -1,8 +1,9 @@
 package com.rozhkov.fitness.management.telegram;
 
 import com.rozhkov.fitness.management.telegram.callback.Callback;
+import com.rozhkov.fitness.management.telegram.callback.CallbackData;
 import com.rozhkov.fitness.management.telegram.callback.CallbackHandler;
-import com.rozhkov.fitness.management.telegram.callback.CallbackQueryDataProcessor;
+import com.rozhkov.fitness.management.telegram.callback.CallbackHelper;
 import com.rozhkov.fitness.management.telegram.message.MessageHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,10 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
     private final String botToken;
 
     private final MessageHandler messageHandler;
+
     private final CallbackHandler callbackHandler;
-    private final CallbackQueryDataProcessor callbackQueryDataProcessor;
+    private final CallbackHelper callbackHelper;
+
 
     @Override
     public String getBotUsername() {
@@ -60,15 +63,12 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
     private Callback createCallback(CallbackQuery callbackQuery) {
         Integer messageId = callbackQuery.getMessage().getMessageId();
         String chatId = callbackQuery.getMessage().getChatId().toString();
-
-        Action clientAction = callbackQueryDataProcessor.parseAction(callbackQuery.getData());
-        String[] dataParams = callbackQueryDataProcessor.parseDataParams(callbackQuery.getData());
+        CallbackData callbackData = callbackHelper.parseCallbackData(callbackQuery.getData());
 
         return Callback.builder()
                 .messageId(messageId)
                 .chatId(chatId)
-                .clientAction(clientAction)
-                .dataParams(dataParams)
+                .callbackData(callbackData)
                 .build();
     }
 

@@ -1,6 +1,6 @@
 package com.rozhkov.fitness.management.telegram.message;
 
-import com.rozhkov.fitness.management.telegram.Action;
+import com.rozhkov.fitness.management.telegram.action.Action;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -25,35 +25,46 @@ public class StartMessageHandler extends BaseMessageHandler {
     protected SendMessage handle(Message message) {
         return SendMessage.builder()
                 .chatId(message.getChatId().toString())
-                .text("Привет " + message.getFrom().getFirstName())
-                .replyMarkup(createCommonReplyKeyboard())
+                .text("Привет " + getClientName(message))
+                .replyMarkup(createMainReplyKeyboard())
                 .build();
     }
 
-    public ReplyKeyboardMarkup createCommonReplyKeyboard() {
-        ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
-        replyKeyboard.setSelective(true);
-        replyKeyboard.setResizeKeyboard(true);
-        replyKeyboard.setOneTimeKeyboard(false);
-
-        List<KeyboardRow> keyboard = new ArrayList<>();
-
-        KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add(createKeyboardButton(Action.SHOW_TODAY_TIMETABLE));
-        keyboardFirstRow.add(createKeyboardButton(Action.SHOW_WEEK_TIMETABLE));
-        keyboard.add(keyboardFirstRow);
-
-        KeyboardRow keyboardSecondRow = new KeyboardRow();
-        keyboardSecondRow.add(createKeyboardButton(Action.SING_UP_FOR_TRAINING));
-        keyboardSecondRow.add(createKeyboardButton(Action.SHOW_MY_TRAINING_RECORDS));
-        keyboard.add(keyboardSecondRow);
-
-        replyKeyboard.setKeyboard(keyboard);
-
-        return replyKeyboard;
+    private String getClientName(Message message) {
+        return message.getFrom().getFirstName();
     }
 
-    private KeyboardButton createKeyboardButton(Action showTodayTimetable) {
-        return new KeyboardButton(showTodayTimetable.getCaption());
+    public ReplyKeyboardMarkup createMainReplyKeyboard() {
+        return ReplyKeyboardMarkup.builder()
+                .selective(true)
+                .resizeKeyboard(true)
+                .oneTimeKeyboard(false)
+                .keyboard(createKeyboardRows())
+                .build();
+    }
+
+    private ArrayList<KeyboardRow> createKeyboardRows() {
+        List<List<Action>> keyboardButtons = List.of(
+                List.of(Action.SHOW_TODAY_TIMETABLE, Action.SHOW_WEEK_TIMETABLE),
+                List.of(Action.SING_UP_FOR_TRAINING, Action.SHOW_MY_TRAINING_RECORDS));
+
+        var keyboardRows = new ArrayList<KeyboardRow>();
+        for (List<Action> keyboardRowButtons : keyboardButtons) {
+            var keyboardRow = createKeyboardRow(keyboardRowButtons);
+            keyboardRows.add(keyboardRow);
+        }
+        return keyboardRows;
+    }
+
+    private KeyboardRow createKeyboardRow(List<Action> rowButtons) {
+        var keyboardRow = new KeyboardRow();
+        for (Action button : rowButtons) {
+            keyboardRow.add(createKeyboardButton(button));
+        }
+        return keyboardRow;
+    }
+
+    private KeyboardButton createKeyboardButton(Action action) {
+        return new KeyboardButton(action.getCaption());
     }
 }
