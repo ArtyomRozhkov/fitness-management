@@ -1,6 +1,7 @@
 package com.rozhkov.fitness.management.telegram.message;
 
 import com.rozhkov.fitness.management.telegram.action.Action;
+import com.rozhkov.fitness.management.telegram.i18n.TextBuilder;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -12,8 +13,11 @@ import java.util.List;
 
 public class StartMessageHandler extends BaseMessageHandler {
 
-    public StartMessageHandler(MessageHandler nextMessageHandler) {
+    private final TextBuilder textBuilder;
+
+    public StartMessageHandler(TextBuilder textBuilder, MessageHandler nextMessageHandler) {
         super(nextMessageHandler);
+        this.textBuilder = textBuilder;
     }
 
     @Override
@@ -25,13 +29,9 @@ public class StartMessageHandler extends BaseMessageHandler {
     protected SendMessage handle(Message message) {
         return SendMessage.builder()
                 .chatId(message.getChatId().toString())
-                .text("Привет " + getClientName(message))
+                .text(textBuilder.createWelcomeText(message.getFrom()))
                 .replyMarkup(createMainReplyKeyboard())
                 .build();
-    }
-
-    private String getClientName(Message message) {
-        return message.getFrom().getFirstName();
     }
 
     public ReplyKeyboardMarkup createMainReplyKeyboard() {

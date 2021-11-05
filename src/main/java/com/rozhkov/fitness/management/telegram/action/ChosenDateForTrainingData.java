@@ -9,5 +9,5 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 public class ChosenDateForTrainingData {
 
-    LocalDate date;
+    private LocalDate date;
 }

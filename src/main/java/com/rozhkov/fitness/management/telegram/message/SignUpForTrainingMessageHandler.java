@@ -3,6 +3,7 @@ package com.rozhkov.fitness.management.telegram.message;
 import com.rozhkov.fitness.management.telegram.action.Action;
 import com.rozhkov.fitness.management.telegram.action.ChosenDateForTrainingData;
 import com.rozhkov.fitness.management.telegram.callback.CallbackHelper;
+import com.rozhkov.fitness.management.telegram.i18n.TextBuilder;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -18,11 +19,14 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
     private static final int COLUMN_NUMBER = 2;
 
     private final CallbackHelper callbackHelper;
+    private final TextBuilder textBuilder;
 
     public SignUpForTrainingMessageHandler(CallbackHelper callbackHelper,
+                                           TextBuilder textBuilder,
                                            MessageHandler nextMessageHandler) {
         super(nextMessageHandler);
         this.callbackHelper = callbackHelper;
+        this.textBuilder = textBuilder;
     }
 
     @Override
@@ -58,28 +62,28 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
     }
 
     private List<InlineKeyboardButton> createFirstRow(Action action, LocalDate today) {
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        row.add(createInlineButton(action, today, "Сегодня"));
+        var row = new ArrayList<InlineKeyboardButton>();
+        row.add(createInlineButton(textBuilder.createTodayText(), action, today));
 
         LocalDate tomorrow = today.plusDays(1);
-        row.add(createInlineButton(action, tomorrow, "Завтра"));
+        row.add(createInlineButton(textBuilder.createTomorrowText(), action, tomorrow));
 
         return row;
     }
 
     private List<InlineKeyboardButton> createRow(Action action, LocalDate today, int rowCounter) {
-        List<InlineKeyboardButton> row = new ArrayList<>();
+        var row = new ArrayList<InlineKeyboardButton>();
 
         for (int columnCounter = 0; columnCounter < COLUMN_NUMBER; columnCounter++) {
             LocalDate day = today.plusDays(rowCounter * COLUMN_NUMBER + columnCounter);
-            row.add(createInlineButton(action, day, day.toString()));
+            row.add(createInlineButton(textBuilder.createDateText(day), action, day));
         }
 
         return row;
     }
 
-    private InlineKeyboardButton createInlineButton(Action clientAction, LocalDate date, String buttonText) {
-        ChosenDateForTrainingData data = new ChosenDateForTrainingData()
+    private InlineKeyboardButton createInlineButton(String buttonText, Action clientAction, LocalDate date) {
+        var data = new ChosenDateForTrainingData()
                 .setDate(date);
         return callbackHelper.createInlineButton(buttonText, clientAction, data);
     }

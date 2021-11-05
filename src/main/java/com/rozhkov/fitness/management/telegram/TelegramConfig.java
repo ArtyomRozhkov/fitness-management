@@ -1,7 +1,9 @@
 package com.rozhkov.fitness.management.telegram;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rozhkov.fitness.management.service.FitnessService;
 import com.rozhkov.fitness.management.telegram.callback.*;
+import com.rozhkov.fitness.management.telegram.i18n.TextBuilder;
 import com.rozhkov.fitness.management.telegram.message.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,10 +13,13 @@ import org.springframework.validation.annotation.Validated;
 import org.telegram.telegrambots.meta.generics.LongPollingBot;
 
 @Configuration
-public class SpringConfig {
+public class TelegramConfig {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private FitnessService fitnessService;
 
     @Bean
     @Validated
@@ -24,25 +29,29 @@ public class SpringConfig {
     }
 
     @Bean
+    public TextBuilder textBuilder() {
+        return new TextBuilder();
+    }
+
+    @Bean
     public MessageHandler messageHandler() {
-        return new StartMessageHandler(
-                new ShowTodayTimetableMessageHandler(
-                        new SignUpForTrainingMessageHandler(callbackHelper(),
-                                new ShowWeekTimetableMessageHandler(
-                                        new ShowMyTrainingRecordMessageHandler(callbackHelper(),
-                                                new UnsupportedMessageHandler())
+        return new StartMessageHandler(textBuilder(),
+                new ShowTodayTimetableMessageHandler(fitnessService, textBuilder(),
+                        new SignUpForTrainingMessageHandler(callbackHelper(), textBuilder(),
+                                new ShowWeekTimetableMessageHandler(fitnessService, textBuilder(),
+                                        new ShowMyTrainingRecordMessageHandler(callbackHelper(), textBuilder(), fitnessService,
+                                                new UnsupportedMessageHandler(textBuilder()))
                                 )
-                        )
-                )
+                        ))
         );
     }
 
     @Bean
     public CallbackHandler callbackHandler() {
-        return new ChosenDateForTrainingCallbackHandler(callbackHelper(),
-                new ChosenTrainingCallbackHandler(callbackHelper(),
-                        new RemoveTrainingRecordCallbackHandler(callbackHelper(),
-                                new RemovedTrainingRecordCallbackHandler(callbackHelper(), null))
+        return new ChosenDateForTrainingCallbackHandler(fitnessService, textBuilder(), callbackHelper(),
+                new ChosenTrainingCallbackHandler(callbackHelper(), textBuilder(), fitnessService,
+                        new RemoveTrainingRecordCallbackHandler(callbackHelper(), textBuilder(), fitnessService,
+                                new RemovedTrainingRecordCallbackHandler(callbackHelper(), textBuilder(), fitnessService, null))
                 )
         );
     }

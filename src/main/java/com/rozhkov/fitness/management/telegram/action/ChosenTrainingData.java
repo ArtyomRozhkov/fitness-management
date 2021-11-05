@@ -6,12 +6,19 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 
+/**
+ * Данные о выбранной тренировке
+ *
+ * Размер метаданных для кнопок в telegram ограничен 64 символами. Поэтому при сериализации/десериализации используются
+ * сокращенные названия полей (см. {@link JsonProperty})
+ */
 @Data
 @Accessors(chain = true)
 public class ChosenTrainingData {
 
     @JsonProperty("d")
-    LocalDate date;
+    private LocalDate date;
+
     @JsonProperty("t")
-    String training;
+    private int timetableId;
 }

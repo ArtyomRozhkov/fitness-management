@@ -17,8 +17,8 @@ public enum Action {
     CHOSEN_DATE_FOR_TRAINING(""),
     CHOOSE_TRAINING("Выбирете тренирувку"),
     CHOSEN_TRAINING(""),
-    REMOVE_TRAINING_RECORD("Выбирете тренировку, на которую не придете"),
-    REMOVED_TRAINING_RECORD("");
+    REMOVE_TRAINING_RECORD("Удалить запись"),
+    REMOVED_TRAINING_RECORD("Выбирете тренировку, на которую не придете");
 
     private final String caption;
 

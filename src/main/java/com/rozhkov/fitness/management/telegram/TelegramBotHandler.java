@@ -13,9 +13,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +30,6 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
 
     private final CallbackHandler callbackHandler;
     private final CallbackHelper callbackHelper;
-
 
     @Override
     public String getBotUsername() {
@@ -68,6 +69,7 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
         return Callback.builder()
                 .messageId(messageId)
                 .chatId(chatId)
+                .user(callbackQuery.getFrom())
                 .callbackData(callbackData)
                 .build();
     }
