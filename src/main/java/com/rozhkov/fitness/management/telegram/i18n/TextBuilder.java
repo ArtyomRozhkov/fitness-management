@@ -1,24 +1,24 @@
 package com.rozhkov.fitness.management.telegram.i18n;
 
 import com.rozhkov.fitness.management.service.Training;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import java.text.MessageFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+// TODO вынести сообщения в ResourceBundle и добавить локализацию
 public class TextBuilder {
+
+    private final ResourceBundle messages = ResourceBundle.getBundle("Messages");
 
     public String createTodayTrainingsText(List<Training> trainings) {
         String trainingList = createTrainingList(trainings);
-        return String.format("Расписание занятий на сегодня: %s%s", System.lineSeparator(), trainingList);
+        return getMessages("today.timetable", List.of(System.lineSeparator(), trainingList));
     }
 
     public String createTrainingTimetableOnWeekText(Map<DayOfWeek, List<Training>> trainingTimetableOnWeek) {
@@ -42,7 +42,7 @@ public class TextBuilder {
     }
 
     public String createSignedUpForTrainingText(LocalDate trainingDate, Training training) {
-        return String.format("Вы записаны %s на %s", trainingDate, trainingToString(training));
+        return getMessages("signed.up.for.training", List.of(dateToString(trainingDate), trainingToString(training)));
     }
 
     public String createWelcomeText(User user) {
@@ -69,6 +69,10 @@ public class TextBuilder {
         return String.format("%s : %s", createDateText(trainingDate), trainingToString(training));
     }
 
+    public String dateToString(LocalDate date) {
+        return date.toString();
+    }
+
     public String createRemoveTrainingRecordText(Training training, LocalDate trainingDate) {
         return String.format("Удалена запись на тренировку %s", trainingToString(training, trainingDate));
     }
@@ -88,5 +92,9 @@ public class TextBuilder {
         return trainings.stream()
                 .map(this::trainingToString)
                 .collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    private String getMessages(String messageCode, List<String> args) {
+        return MessageFormat.format(messages.getString(messageCode), args);
     }
 }

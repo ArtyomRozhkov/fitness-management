@@ -21,12 +21,27 @@ public class CallbackHelper {
         }
     }
 
+    public <T> T retrieveCallbackData(CallbackData callbackData, Class<T> clazz) {
+        return objectMapper.convertValue(callbackData.getParams(), clazz);
+    }
+
     public InlineKeyboardButton createInlineButton(String buttonCaption, Action action, Object data) {
+        CallbackData callbackData = CallbackData.builder()
+                .clientAction(action)
+                .params(objectMapper.convertValue(data, Map.class))
+                .build();
+        return createInlineButton(buttonCaption, callbackData);
+    }
+
+    public InlineKeyboardButton createInlineButton(String buttonCaption, Action action) {
+        CallbackData callbackData = CallbackData.builder()
+                .clientAction(action)
+                .build();
+        return createInlineButton(buttonCaption, callbackData);
+    }
+
+    private InlineKeyboardButton createInlineButton(String buttonCaption, CallbackData callbackData) {
         try {
-            CallbackData callbackData = CallbackData.builder()
-                    .clientAction(action)
-                    .params(objectMapper.convertValue(data, Map.class))
-                    .build();
             String callbackDataStr = objectMapper.writeValueAsString(callbackData);
             if (callbackDataStr.length() > 64) {
                 throw new IllegalArgumentException("Превышена максимально возможная длина данных для кнопки");
@@ -38,23 +53,5 @@ public class CallbackHelper {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException();
         }
-    }
-
-    public InlineKeyboardButton createInlineButton(String buttonCaption, Action action) {
-        try {
-            CallbackData callbackData = CallbackData.builder()
-                    .clientAction(action)
-                    .build();
-            return InlineKeyboardButton.builder()
-                    .text(buttonCaption)
-                    .callbackData(objectMapper.writeValueAsString(callbackData))
-                    .build();
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException();
-        }
-    }
-
-    public <T> T retrieveCallbackData(CallbackData callbackData, Class<T> clazz) {
-        return objectMapper.convertValue(callbackData.getParams(), clazz);
     }
 }

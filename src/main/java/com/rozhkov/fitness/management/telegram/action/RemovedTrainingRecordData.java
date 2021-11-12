@@ -6,6 +6,12 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 
+/**
+ * Данные о записи на тренировку, которую нужно удалить
+ *
+ * Размер метаданных для кнопок в telegram ограничен 64 символами. Поэтому при сериализации/десериализации используются
+ * сокращенные названия полей (см. {@link JsonProperty})
+ */
 @Data
 @Accessors(chain = true)
 public class RemovedTrainingRecordData {

@@ -10,9 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RemoveTrainingRecordCallbackHandler extends BaseCallbackHandler {
 
@@ -39,25 +41,36 @@ public class RemoveTrainingRecordCallbackHandler extends BaseCallbackHandler {
 
     private InlineKeyboardMarkup createInlineReplyTrainingList(Long userId) {
         Map<LocalDate, List<Training>> trainings = fitnessService.getUserTrainings(userId);
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 
-        trainings.entrySet().stream()
+        List<List<InlineKeyboardButton>> trainingButtons = trainings.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
-                .forEach(localDateListEntry -> localDateListEntry.getValue()
-                        .forEach(training -> {
-                            LocalDate trainingDate = localDateListEntry.getKey();
-                            RemovedTrainingRecordData data = new RemovedTrainingRecordData()
-                                    .setTimetableId(training.getTimetableId())
-                                    .setDate(trainingDate);
-
-                            List<InlineKeyboardButton> row = new ArrayList<>();
-                            row.add(callbackHelper.createInlineButton(textBuilder.trainingToString(training, trainingDate), Action.REMOVED_TRAINING_RECORD, data));
-                            rowsInline.add(row);
-                        })
-                );
+                .flatMap(this::toDayAndTrainingStream)
+                .map(this::createTrainingButton)
+                .map(List::of)
+                .collect(Collectors.toList());
 
         return InlineKeyboardMarkup.builder()
-                .keyboard(rowsInline)
+                .keyboard(trainingButtons)
                 .build();
     }
+
+    private Stream<AbstractMap.SimpleEntry<LocalDate, Training>> toDayAndTrainingStream(
+            Map.Entry<LocalDate, List<Training>> dayAndTrainings) {
+        return dayAndTrainings.getValue()
+                .stream()
+                .map(training -> new AbstractMap.SimpleEntry<>(dayAndTrainings.getKey(), training));
+    }
+
+    private InlineKeyboardButton createTrainingButton(AbstractMap.SimpleEntry<LocalDate, Training> dayAndTraining) {
+        LocalDate trainingDate = dayAndTraining.getKey();
+        Training training = dayAndTraining.getValue();
+
+        RemovedTrainingRecordData data = new RemovedTrainingRecordData()
+                .setTimetableId(training.getTimetableId())
+                .setDate(trainingDate);
+
+       return callbackHelper.createInlineButton(
+                textBuilder.trainingToString(training, trainingDate), Action.REMOVED_TRAINING_RECORD, data);
+    }
+
 }

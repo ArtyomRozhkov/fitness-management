@@ -11,8 +11,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChosenDateForTrainingCallbackHandler extends BaseCallbackHandler {
 
@@ -45,19 +45,21 @@ public class ChosenDateForTrainingCallbackHandler extends BaseCallbackHandler {
         LocalDate trainingDate = callbackData.getDate();
         List<Training> trainings = fitnessService.getTrainingTimetableOnDate(trainingDate);
 
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for (Training training : trainings) {
-            ChosenTrainingData data = new ChosenTrainingData()
-                    .setDate(trainingDate)
-                    .setTimetableId(training.getTimetableId());
-
-            List<InlineKeyboardButton> row = new ArrayList<>();
-            row.add(callbackHelper.createInlineButton(textBuilder.trainingToString(training), Action.CHOSEN_TRAINING, data));
-            rowsInline.add(row);
-        }
+        List<List<InlineKeyboardButton>> trainingButtons = trainings.stream()
+                .map(training -> createTrainingButton(trainingDate, training))
+                .map(List::of)
+                .collect(Collectors.toList());
 
         return InlineKeyboardMarkup.builder()
-                .keyboard(rowsInline)
+                .keyboard(trainingButtons)
                 .build();
+    }
+
+    private InlineKeyboardButton createTrainingButton(LocalDate trainingDate, Training training) {
+        ChosenTrainingData data = new ChosenTrainingData()
+                .setDate(trainingDate)
+                .setTimetableId(training.getTimetableId());
+
+        return callbackHelper.createInlineButton(textBuilder.trainingToString(training), Action.CHOSEN_TRAINING, data);
     }
 }

@@ -4,6 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+/**
+ * Базовый класс для обработчиков сообщений
+ *
+ * Реализует паттерт "Цепочка обязанностей", соединяя всех обработчиков в цепочку. {@link Message} идет по цепочке
+ * до тех пор, пока метод {@link #canHandle(Message)} очередного обратчика не возвратит {@code true}. После чего
+ * происходит обработка {@link Message} методом {@link #handle(Message)} и процесс завершается.
+ */
 @RequiredArgsConstructor
 public abstract class BaseMessageHandler implements MessageHandler {
 

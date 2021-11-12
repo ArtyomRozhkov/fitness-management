@@ -7,6 +7,14 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 import java.io.Serializable;
 
+/**
+ * Базовый класс для обработчиков нажатия на кнопки
+ *
+ * Реализует паттерт "Цепочка обязанностей", соединяя всех обработчиков в цепочку. {@link Callback} идет по цепочке
+ * до тех пор, пока метод {@link #canHandle(Callback)} очередного обратчика не возвратит {@code true}. После чего
+ * происходит обработка {@link Callback} методом {@link #handle(Callback)} и процесс завершается.
+ *
+ */
 @RequiredArgsConstructor
 public abstract class BaseCallbackHandler implements CallbackHandler {
 

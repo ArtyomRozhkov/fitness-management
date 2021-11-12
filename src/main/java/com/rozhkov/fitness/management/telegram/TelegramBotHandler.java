@@ -13,12 +13,16 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.Serializable;
-import java.util.Locale;
 
+/**
+ * Класс-обработчик сообщений от telegram. Входная точка обработки сообщений.
+ *
+ * Используется long polling стратегия опроса сервера telegram на наличие новых сообщений от пользоватлей.
+ * Если сообщения появляются, то на каждое сообщение вызывается метод {@link #onUpdateReceived(Update)}
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class TelegramBotHandler extends TelegramLongPollingBot {
@@ -41,24 +45,35 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
         return botToken;
     }
 
+    /**
+     * Обработка пользовательского сообщения
+     *
+     * Метод вызывается каждый раз когда пользователи посылают сообщения или нажимают на кастомные кнопки
+     * @param update информация о введенном сообщении или нажатой кнопке
+     */
     @Override
     public void onUpdateReceived(Update update) {
         if (isMessage(update)) {
-
-            Message receiveMessage = update.getMessage();
-            SendMessage replyMessage = messageHandler.handleMessage(receiveMessage);
-            sendReply(replyMessage);
-
+            processMessage(update);
         } else if (update.hasCallbackQuery()) {
-
-            Callback callback = createCallback(update.getCallbackQuery());
-            BotApiMethod<?> editedMessage = callbackHandler.handleCallback(callback);
-            sendReply(editedMessage);
+            processCallback(update);
         }
     }
 
     private boolean isMessage(Update update) {
         return update.hasMessage() && update.getMessage().hasText();
+    }
+
+    private void processMessage(Update update) {
+        Message receiveMessage = update.getMessage();
+        SendMessage replyMessage = messageHandler.handleMessage(receiveMessage);
+        sendReply(replyMessage);
+    }
+
+    private void processCallback(Update update) {
+        Callback callback = createCallback(update.getCallbackQuery());
+        BotApiMethod<?> editedMessage = callbackHandler.handleCallback(callback);
+        sendReply(editedMessage);
     }
 
     private Callback createCallback(CallbackQuery callbackQuery) {
@@ -82,3 +97,5 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
         }
     }
 }
+
+

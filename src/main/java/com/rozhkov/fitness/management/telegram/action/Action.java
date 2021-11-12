@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+// TODO сделать явную привязку Action и классов CallbackData
 @RequiredArgsConstructor
 @Getter
 public enum Action {

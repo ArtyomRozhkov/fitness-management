@@ -12,6 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO реализовать логику работы сервиса и получение данных из репозиториев
 public class FitnessService {
 
     public List<Training> getTrainingTimetableOnDate(LocalDate date) {
@@ -21,6 +22,18 @@ public class FitnessService {
     public Map<DayOfWeek, List<Training>> getTrainingTimetableOnWeek() {
         return Arrays.stream(DayOfWeek.values())
                 .collect(Collectors.toMap(dayOfWeek -> dayOfWeek, dayOfWeek -> this.getTrainingTimetableOnDate(LocalDate.now())));
+    }
+
+    public Training getTraining(int timetableId) {
+        return getTestTrainingList().stream()
+                .filter(training -> training.getTimetableId() == timetableId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Training not found"));
+    }
+
+    public Map<LocalDate, List<Training>> getUserTrainings(Long userId) {
+        return Stream.of(LocalDate.now(), LocalDate.now().plusDays(1), LocalDate.now().plusDays(10))
+                .collect(Collectors.toMap(Function.identity(), localDate -> getTestTrainingList()));
     }
 
     private List<Training> getTestTrainingList() {
@@ -49,17 +62,5 @@ public class FitnessService {
                 .build();
 
         return List.of(training1, training2, training3);
-    }
-
-    public Training getTraining(int timetableId) {
-        return getTestTrainingList().stream()
-                .filter(training -> training.getTimetableId() == timetableId)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Training not found"));
-    }
-
-    public Map<LocalDate, List<Training>> getUserTrainings(Long userId) {
-        return Stream.of(LocalDate.now(), LocalDate.now().plusDays(1), LocalDate.now().plusDays(10))
-                .collect(Collectors.toMap(Function.identity(), localDate -> getTestTrainingList()));
     }
 }

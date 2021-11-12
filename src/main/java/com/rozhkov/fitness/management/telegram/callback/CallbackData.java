@@ -7,6 +7,12 @@ import lombok.Data;
 
 import java.util.Map;
 
+/**
+ * Метаданные, сохраненные у кнопки
+ *
+ * Размер метаданных для кнопок в telegram ограничен 64 символами. Поэтому при сериализации/десериализации используются
+ * сокращенные названия полей (см. {@link JsonProperty})
+ */
 @Data
 @Builder
 public class CallbackData {
