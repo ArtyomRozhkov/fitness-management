@@ -1,24 +1,29 @@
 package com.rozhkov.fitness.management.telegram.i18n;
 
 import com.rozhkov.fitness.management.service.Training;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.telegram.telegrambots.meta.api.objects.User;
 
-import java.text.MessageFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-// TODO вынести сообщения в ResourceBundle и добавить локализацию
+// TODO вынести сообщения в MessageSource и добавить локализацию
+@RequiredArgsConstructor
 public class TextBuilder {
 
-    private final ResourceBundle messages = ResourceBundle.getBundle("Messages");
+    private final MessageSource messageSource;
 
     public String createTodayTrainingsText(List<Training> trainings) {
         String trainingList = createTrainingList(trainings);
-        return getMessages("today.timetable", List.of(System.lineSeparator(), trainingList));
+        return messageSource.getMessage("today.timetable", List.of(System.lineSeparator(), trainingList).toArray(), Locale.ENGLISH);
     }
 
     public String createTrainingTimetableOnWeekText(Map<DayOfWeek, List<Training>> trainingTimetableOnWeek) {
@@ -42,7 +47,7 @@ public class TextBuilder {
     }
 
     public String createSignedUpForTrainingText(LocalDate trainingDate, Training training) {
-        return getMessages("signed.up.for.training", List.of(dateToString(trainingDate), trainingToString(training)));
+        return messageSource.getMessage("signed.up.for.training", List.of(dateToString(trainingDate), trainingToString(training)).toArray(), Locale.ENGLISH);
     }
 
     public String createWelcomeText(User user) {
@@ -92,9 +97,5 @@ public class TextBuilder {
         return trainings.stream()
                 .map(this::trainingToString)
                 .collect(Collectors.joining(System.lineSeparator()));
-    }
-
-    private String getMessages(String messageCode, List<String> args) {
-        return MessageFormat.format(messages.getString(messageCode), args);
     }
 }

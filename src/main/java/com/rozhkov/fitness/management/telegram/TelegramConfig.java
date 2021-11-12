@@ -7,6 +7,7 @@ import com.rozhkov.fitness.management.telegram.i18n.TextBuilder;
 import com.rozhkov.fitness.management.telegram.message.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +22,9 @@ public class TelegramConfig {
     @Autowired
     private FitnessService fitnessService;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @Bean
     @Validated
     @ConfigurationProperties(prefix = "telegram")
@@ -30,7 +34,7 @@ public class TelegramConfig {
 
     @Bean
     public TextBuilder textBuilder() {
-        return new TextBuilder();
+        return new TextBuilder(messageSource);
     }
 
     @Bean
