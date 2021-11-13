@@ -15,15 +15,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// TODO вынести сообщения в MessageSource и добавить локализацию
+// TODO добавить локализацию
 @RequiredArgsConstructor
 public class TextBuilder {
 
     private final MessageSource messageSource;
+    private final Locale locale = new Locale("ru");
 
     public String createTodayTrainingsText(List<Training> trainings) {
         String trainingList = createTrainingList(trainings);
-        return messageSource.getMessage("today.timetable", List.of(System.lineSeparator(), trainingList).toArray(), Locale.ENGLISH);
+        return messageSource.getMessage("today.timetable", List.of(System.lineSeparator(), trainingList).toArray(), locale);
     }
 
     public String createTrainingTimetableOnWeekText(Map<DayOfWeek, List<Training>> trainingTimetableOnWeek) {
@@ -33,12 +34,15 @@ public class TextBuilder {
     }
 
     public String createUserTrainingsText(Map<LocalDate, List<Training>> trainings) {
-        return String.format("Вы записаны::%s%s",
-                System.lineSeparator(),
-                trainings.entrySet().stream()
-                        .sorted(Map.Entry.comparingByKey())
-                        .map(dateAndTrainings -> createOnDayTrainingRecordsText(dateAndTrainings.getKey(), dateAndTrainings.getValue()))
-                        .collect(Collectors.joining(System.lineSeparator() + System.lineSeparator())));
+        String trainingList = trainings.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(dateAndTrainings -> createOnDayTrainingRecordsText(dateAndTrainings.getKey(), dateAndTrainings.getValue()))
+                .collect(Collectors.joining(System.lineSeparator() + System.lineSeparator()));
+
+        return messageSource.getMessage(
+                "recorded.for.trainings",
+                List.of(System.lineSeparator(), trainingList).toArray(),
+                locale);
     }
 
     public String trainingToString(Training training) {
@@ -46,24 +50,24 @@ public class TextBuilder {
                 training.getTrainingRange().getLowerBound(), training.getTrainingRange().getUpperBound(), training.getTitle());
     }
 
-    public String createSignedUpForTrainingText(LocalDate trainingDate, Training training) {
-        return messageSource.getMessage("signed.up.for.training", List.of(dateToString(trainingDate), trainingToString(training)).toArray(), Locale.ENGLISH);
+    public String createRecordedForTrainingText(LocalDate trainingDate, Training training) {
+        return messageSource.getMessage("recorded.for.training", List.of(createDateText(trainingDate), trainingToString(training)).toArray(), locale);
     }
 
     public String createWelcomeText(User user) {
-        return "Привет " + user.getFirstName();
+        return messageSource.getMessage("welcome", List.of(user.getFirstName()).toArray(), locale);
     }
 
     public String createUnsupportedCommandText() {
-        return "Не знаю чем могу помочь. Выберете одно из доступных действий";
+        return messageSource.getMessage("unsupported.command", null, locale);
     }
 
     public String createTodayText() {
-        return "Сегодня";
+        return messageSource.getMessage("today", null, locale);
     }
 
     public String createTomorrowText() {
-        return "Завтра";
+        return messageSource.getMessage("tomorrow", null, locale);
     }
 
     public String createDateText(LocalDate day) {
@@ -74,23 +78,19 @@ public class TextBuilder {
         return String.format("%s : %s", createDateText(trainingDate), trainingToString(training));
     }
 
-    public String dateToString(LocalDate date) {
-        return date.toString();
-    }
-
     public String createRemoveTrainingRecordText(Training training, LocalDate trainingDate) {
-        return String.format("Удалена запись на тренировку %s", trainingToString(training, trainingDate));
+        return messageSource.getMessage("removed.training.record", List.of(trainingToString(training, trainingDate)).toArray(), locale);
     }
 
     private String createOnDayTrainingRecordsText(DayOfWeek dayOfWeek, List<Training> trainings) {
         String trainingList = createTrainingList(trainings);
-        return String.format("Расписание занятий на %s: %s%s",
-                dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH), System.lineSeparator(), trainingList);
+        return String.format("%s: %s%s",
+                dayOfWeek.getDisplayName(TextStyle.FULL, locale), System.lineSeparator(), trainingList);
     }
 
     private String createOnDayTrainingRecordsText(LocalDate date, List<Training> trainings) {
         String trainingList = createTrainingList(trainings);
-        return String.format("%s на: %s%s", date, System.lineSeparator(), trainingList);
+        return String.format("%s: %s%s", date, System.lineSeparator(), trainingList);
     }
 
     private String createTrainingList(List<Training> trainings) {
