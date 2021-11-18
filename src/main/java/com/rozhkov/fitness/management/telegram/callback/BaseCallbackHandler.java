@@ -1,6 +1,7 @@
 package com.rozhkov.fitness.management.telegram.callback;
 
 import com.rozhkov.fitness.management.service.FitnessService;
+import com.rozhkov.fitness.management.telegram.action.Action;
 import com.rozhkov.fitness.management.telegram.i18n.TextBuilder;
 import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -17,6 +18,8 @@ import java.io.Serializable;
  */
 @RequiredArgsConstructor
 public abstract class BaseCallbackHandler implements CallbackHandler {
+
+    protected final Action action;
 
     protected final CallbackHelper callbackHelper;
     protected final TextBuilder textBuilder;
@@ -37,7 +40,9 @@ public abstract class BaseCallbackHandler implements CallbackHandler {
         }
     }
 
-    protected abstract boolean canHandle(Callback callback);
+    private boolean canHandle(Callback callback) {
+        return callback.getCallbackData().getAction() == action;
+    }
 
     protected abstract <T extends Serializable, Method extends BotApiMethod<T>> Method handle(Callback callback);
 }

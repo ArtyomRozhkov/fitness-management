@@ -13,12 +13,7 @@ public class ChosenTrainingCallbackHandler extends BaseCallbackHandler {
                                          TextBuilder textBuilder,
                                          FitnessService fitnessService,
                                          CallbackHandler nextCallbackHandler) {
-        super(callbackHelper, textBuilder, fitnessService, nextCallbackHandler);
-    }
-
-    @Override
-    protected boolean canHandle(Callback callback) {
-        return callback.getCallbackData().getClientAction() == Action.CHOSEN_TRAINING;
+        super(Action.CHOSEN_TRAINING, callbackHelper, textBuilder, fitnessService, nextCallbackHandler);
     }
 
     @Override

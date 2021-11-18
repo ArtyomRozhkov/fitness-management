@@ -13,12 +13,7 @@ public class RemovedTrainingRecordCallbackHandler extends BaseCallbackHandler {
                                                 TextBuilder textBuilder,
                                                 FitnessService fitnessService,
                                                 CallbackHandler nextCallbackHandler) {
-        super(callbackHelper, textBuilder, fitnessService, nextCallbackHandler);
-    }
-
-    @Override
-    protected boolean canHandle(Callback callback) {
-        return callback.getCallbackData().getClientAction() == Action.REMOVED_TRAINING_RECORD;
+        super(Action.REMOVED_TRAINING_RECORD, callbackHelper, textBuilder, fitnessService, nextCallbackHandler);
     }
 
     @Override

@@ -14,7 +14,9 @@ import java.time.LocalDate;
  */
 @Data
 @Accessors(chain = true)
-public class RemovedTrainingRecordData {
+public class RemovedTrainingRecordData implements ActionData {
+
+    private final Action action = Action.REMOVED_TRAINING_RECORD;
 
     @JsonProperty("d")
     private LocalDate date;

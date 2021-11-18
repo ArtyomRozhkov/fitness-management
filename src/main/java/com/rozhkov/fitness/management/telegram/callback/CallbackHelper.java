@@ -1,57 +1,48 @@
 package com.rozhkov.fitness.management.telegram.callback;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rozhkov.fitness.management.telegram.action.Action;
+import com.rozhkov.fitness.management.telegram.action.ActionData;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class CallbackHelper {
 
+    private static final int MAX_LENGTH_OF_CALLBACK_DATA = 64;
+
     private final ObjectMapper objectMapper;
 
+    @SneakyThrows
     public CallbackData parseCallbackData(String callbackData) {
-        try {
-            return objectMapper.readValue(callbackData, CallbackData.class);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Ошибка при десериализации callback", e);
-        }
+        return objectMapper.readValue(callbackData, CallbackData.class);
     }
 
     public <T> T retrieveCallbackData(CallbackData callbackData, Class<T> clazz) {
         return objectMapper.convertValue(callbackData.getParams(), clazz);
     }
 
-    public InlineKeyboardButton createInlineButton(String buttonCaption, Action action, Object data) {
-        CallbackData callbackData = CallbackData.builder()
-                .clientAction(action)
-                .params(objectMapper.convertValue(data, Map.class))
-                .build();
+    public InlineKeyboardButton createInlineButton(String buttonCaption, ActionData actionData) {
+        CallbackData callbackData = objectMapper.convertValue(actionData, CallbackData.class);
         return createInlineButton(buttonCaption, callbackData);
     }
 
     public InlineKeyboardButton createInlineButton(String buttonCaption, Action action) {
-        CallbackData callbackData = CallbackData.builder()
-                .clientAction(action)
-                .build();
+        CallbackData callbackData = new CallbackData()
+                .setAction(action);
         return createInlineButton(buttonCaption, callbackData);
     }
 
+    @SneakyThrows
     private InlineKeyboardButton createInlineButton(String buttonCaption, CallbackData callbackData) {
-        try {
-            String callbackDataStr = objectMapper.writeValueAsString(callbackData);
-            if (callbackDataStr.length() > 64) {
-                throw new IllegalArgumentException("Превышена максимально возможная длина данных для кнопки");
-            }
-            return InlineKeyboardButton.builder()
-                    .text(buttonCaption)
-                    .callbackData(callbackDataStr)
-                    .build();
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException();
+        String callbackDataStr = objectMapper.writeValueAsString(callbackData);
+        if (callbackDataStr.length() > MAX_LENGTH_OF_CALLBACK_DATA) {
+            throw new IllegalArgumentException("Превышена максимально возможная длина данных для кнопки");
         }
+        return InlineKeyboardButton.builder()
+                .text(buttonCaption)
+                .callbackData(callbackDataStr)
+                .build();
     }
 }

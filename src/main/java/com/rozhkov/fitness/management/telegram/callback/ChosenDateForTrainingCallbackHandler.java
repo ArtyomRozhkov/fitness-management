@@ -20,12 +20,7 @@ public class ChosenDateForTrainingCallbackHandler extends BaseCallbackHandler {
                                                 TextBuilder textBuilder,
                                                 CallbackHelper callbackHelper,
                                                 CallbackHandler nextCallbackHandler) {
-        super(callbackHelper, textBuilder, fitnessService, nextCallbackHandler);
-    }
-
-    @Override
-    protected boolean canHandle(Callback callback) {
-        return callback.getCallbackData().getClientAction() == Action.CHOSEN_DATE_FOR_TRAINING;
+        super(Action.CHOSEN_DATE_FOR_TRAINING, callbackHelper, textBuilder, fitnessService, nextCallbackHandler);
     }
 
     @Override
@@ -60,6 +55,6 @@ public class ChosenDateForTrainingCallbackHandler extends BaseCallbackHandler {
                 .setDate(trainingDate)
                 .setTimetableId(training.getTimetableId());
 
-        return callbackHelper.createInlineButton(textBuilder.trainingToString(training), Action.CHOSEN_TRAINING, data);
+        return callbackHelper.createInlineButton(textBuilder.trainingToString(training), data);
     }
 }

@@ -22,12 +22,7 @@ public class RemoveTrainingRecordCallbackHandler extends BaseCallbackHandler {
                                                TextBuilder textBuilder,
                                                FitnessService fitnessService,
                                                CallbackHandler nextCallbackHandler) {
-        super(callbackHelper, textBuilder, fitnessService, nextCallbackHandler);
-    }
-
-    @Override
-    protected boolean canHandle(Callback callback) {
-        return callback.getCallbackData().getClientAction() == Action.REMOVE_TRAINING_RECORD;
+        super(Action.REMOVE_TRAINING_RECORD, callbackHelper, textBuilder, fitnessService, nextCallbackHandler);
     }
 
     @Override
@@ -70,7 +65,7 @@ public class RemoveTrainingRecordCallbackHandler extends BaseCallbackHandler {
                 .setDate(trainingDate);
 
        return callbackHelper.createInlineButton(
-                textBuilder.trainingToString(training, trainingDate), Action.REMOVED_TRAINING_RECORD, data);
+                textBuilder.trainingToString(training, trainingDate), data);
     }
 
 }

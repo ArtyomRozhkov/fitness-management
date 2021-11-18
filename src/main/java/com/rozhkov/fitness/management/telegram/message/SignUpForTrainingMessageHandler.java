@@ -42,47 +42,46 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
     }
 
     private InlineKeyboardMarkup createInlineReplyDatesKeyboard() {
-        var action = Action.CHOSEN_DATE_FOR_TRAINING;
-        var rows = new ArrayList<List<InlineKeyboardButton>>();
+        var keyboardRows = new ArrayList<List<InlineKeyboardButton>>();
         var today = LocalDate.now();
 
         for (int rowCounter = 0; rowCounter < ROW_NUMBER; rowCounter++) {
             if (rowCounter == 0) {
-                rows.add(createFirstRow(action, today));
+                keyboardRows.add(createFirstRow(today));
             } else {
-                rows.add(createRow(action, today, rowCounter));
+                keyboardRows.add(createRow(today, rowCounter));
             }
         }
 
         return InlineKeyboardMarkup.builder()
-                .keyboard(rows)
+                .keyboard(keyboardRows)
                 .build();
     }
 
-    private List<InlineKeyboardButton> createFirstRow(Action action, LocalDate today) {
+    private List<InlineKeyboardButton> createFirstRow(LocalDate today) {
         var row = new ArrayList<InlineKeyboardButton>();
-        row.add(createInlineButton(textBuilder.createTodayText(), action, today));
+        row.add(createDateButton(textBuilder.createTodayText(), today));
 
         LocalDate tomorrow = today.plusDays(1);
-        row.add(createInlineButton(textBuilder.createTomorrowText(), action, tomorrow));
+        row.add(createDateButton(textBuilder.createTomorrowText(), tomorrow));
 
         return row;
     }
 
-    private List<InlineKeyboardButton> createRow(Action action, LocalDate today, int rowCounter) {
+    private List<InlineKeyboardButton> createRow(LocalDate today, int rowCounter) {
         var row = new ArrayList<InlineKeyboardButton>();
 
         for (int columnCounter = 0; columnCounter < COLUMN_NUMBER; columnCounter++) {
             LocalDate day = today.plusDays((long) rowCounter * COLUMN_NUMBER + columnCounter);
-            row.add(createInlineButton(textBuilder.createDateText(day), action, day));
+            row.add(createDateButton(textBuilder.createDateText(day), day));
         }
 
         return row;
     }
 
-    private InlineKeyboardButton createInlineButton(String buttonText, Action clientAction, LocalDate date) {
+    private InlineKeyboardButton createDateButton(String buttonText, LocalDate date) {
         var data = new ChosenDateForTrainingData()
                 .setDate(date);
-        return callbackHelper.createInlineButton(buttonText, clientAction, data);
+        return callbackHelper.createInlineButton(buttonText, data);
     }
 }
