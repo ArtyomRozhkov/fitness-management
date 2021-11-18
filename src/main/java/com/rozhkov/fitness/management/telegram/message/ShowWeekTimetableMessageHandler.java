@@ -14,14 +14,12 @@ import java.util.Map;
 public class ShowWeekTimetableMessageHandler extends BaseMessageHandler {
 
     private final FitnessService fitnessService;
-    private final TextBuilder textBuilder;
 
     public ShowWeekTimetableMessageHandler(FitnessService fitnessService,
                                            TextBuilder textBuilder,
                                            MessageHandler nextMessageHandler) {
-        super(nextMessageHandler);
+        super(textBuilder, nextMessageHandler);
         this.fitnessService = fitnessService;
-        this.textBuilder = textBuilder;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class ShowWeekTimetableMessageHandler extends BaseMessageHandler {
     }
 
     private String getWeekTimetable() {
-        Map<DayOfWeek, List<Training>> trainingTimetableOnWeek = fitnessService.getTrainingTimetableOnWeek();
+        final Map<DayOfWeek, List<Training>> trainingTimetableOnWeek = fitnessService.getTrainingTimetableOnWeek();
         return textBuilder.createTrainingTimetableOnWeekText(trainingTimetableOnWeek);
     }
 }

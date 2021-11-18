@@ -13,11 +13,8 @@ import java.util.List;
 
 public class StartMessageHandler extends BaseMessageHandler {
 
-    private final TextBuilder textBuilder;
-
     public StartMessageHandler(TextBuilder textBuilder, MessageHandler nextMessageHandler) {
-        super(nextMessageHandler);
-        this.textBuilder = textBuilder;
+        super(textBuilder, nextMessageHandler);
     }
 
     @Override
@@ -44,7 +41,7 @@ public class StartMessageHandler extends BaseMessageHandler {
     }
 
     private ArrayList<KeyboardRow> createKeyboardRows() {
-        List<List<Action>> keyboardButtons = List.of(
+        var keyboardButtons = List.of(
                 List.of(Action.SHOW_TODAY_TIMETABLE, Action.SHOW_WEEK_TIMETABLE),
                 List.of(Action.SING_UP_FOR_TRAINING, Action.SHOW_MY_TRAINING_RECORDS));
 

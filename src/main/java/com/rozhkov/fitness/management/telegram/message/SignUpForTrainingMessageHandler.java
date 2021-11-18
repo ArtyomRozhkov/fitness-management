@@ -19,14 +19,12 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
     private static final int COLUMN_NUMBER = 2;
 
     private final CallbackHelper callbackHelper;
-    private final TextBuilder textBuilder;
 
     public SignUpForTrainingMessageHandler(CallbackHelper callbackHelper,
                                            TextBuilder textBuilder,
                                            MessageHandler nextMessageHandler) {
-        super(nextMessageHandler);
+        super(textBuilder, nextMessageHandler);
         this.callbackHelper = callbackHelper;
-        this.textBuilder = textBuilder;
     }
 
     @Override
@@ -44,9 +42,9 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
     }
 
     private InlineKeyboardMarkup createInlineReplyDatesKeyboard() {
-        Action action = Action.CHOSEN_DATE_FOR_TRAINING;
-        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        LocalDate today = LocalDate.now();
+        var action = Action.CHOSEN_DATE_FOR_TRAINING;
+        var rows = new ArrayList<List<InlineKeyboardButton>>();
+        var today = LocalDate.now();
 
         for (int rowCounter = 0; rowCounter < ROW_NUMBER; rowCounter++) {
             if (rowCounter == 0) {
@@ -75,7 +73,7 @@ public class SignUpForTrainingMessageHandler extends BaseMessageHandler {
         var row = new ArrayList<InlineKeyboardButton>();
 
         for (int columnCounter = 0; columnCounter < COLUMN_NUMBER; columnCounter++) {
-            LocalDate day = today.plusDays(rowCounter * COLUMN_NUMBER + columnCounter);
+            LocalDate day = today.plusDays((long) rowCounter * COLUMN_NUMBER + columnCounter);
             row.add(createInlineButton(textBuilder.createDateText(day), action, day));
         }
 

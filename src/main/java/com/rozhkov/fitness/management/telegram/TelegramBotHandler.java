@@ -65,21 +65,21 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
     }
 
     private void processMessage(Update update) {
-        Message receiveMessage = update.getMessage();
-        SendMessage replyMessage = messageHandler.handleMessage(receiveMessage);
+        final Message receiveMessage = update.getMessage();
+        final SendMessage replyMessage = messageHandler.handleMessage(receiveMessage);
         sendReply(replyMessage);
     }
 
     private void processCallback(Update update) {
-        Callback callback = createCallback(update.getCallbackQuery());
-        BotApiMethod<?> editedMessage = callbackHandler.handleCallback(callback);
+        final Callback callback = createCallback(update.getCallbackQuery());
+        final BotApiMethod<?> editedMessage = callbackHandler.handleCallback(callback);
         sendReply(editedMessage);
     }
 
     private Callback createCallback(CallbackQuery callbackQuery) {
-        Integer messageId = callbackQuery.getMessage().getMessageId();
-        String chatId = callbackQuery.getMessage().getChatId().toString();
-        CallbackData callbackData = callbackHelper.parseCallbackData(callbackQuery.getData());
+        final Integer messageId = callbackQuery.getMessage().getMessageId();
+        final String chatId = callbackQuery.getMessage().getChatId().toString();
+        final CallbackData callbackData = callbackHelper.parseCallbackData(callbackQuery.getData());
 
         return Callback.builder()
                 .messageId(messageId)

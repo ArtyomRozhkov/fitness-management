@@ -6,11 +6,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 public class UnsupportedMessageHandler extends BaseMessageHandler {
 
-    public final TextBuilder textBuilder;
-
     public UnsupportedMessageHandler(TextBuilder textBuilder) {
-        super(null);
-        this.textBuilder = textBuilder;
+        super(textBuilder, null);
     }
 
     @Override

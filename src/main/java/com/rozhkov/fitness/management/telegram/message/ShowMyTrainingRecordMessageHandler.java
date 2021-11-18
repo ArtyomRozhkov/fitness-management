@@ -16,16 +16,14 @@ import java.util.Map;
 public class ShowMyTrainingRecordMessageHandler extends BaseMessageHandler {
 
     private final CallbackHelper callbackHelper;
-    private final TextBuilder textBuilder;
     private final FitnessService fitnessService;
 
     public ShowMyTrainingRecordMessageHandler(CallbackHelper callbackHelper,
                                               TextBuilder textBuilder,
                                               FitnessService fitnessService,
                                               MessageHandler nextMessageHandler) {
-        super(nextMessageHandler);
+        super(textBuilder, nextMessageHandler);
         this.callbackHelper = callbackHelper;
-        this.textBuilder = textBuilder;
         this.fitnessService = fitnessService;
     }
 
@@ -44,7 +42,7 @@ public class ShowMyTrainingRecordMessageHandler extends BaseMessageHandler {
     }
 
     private String getClientTraining(Long userId) {
-        Map<LocalDate, List<Training>> trainings = fitnessService.getUserTrainings(userId);
+        final Map<LocalDate, List<Training>> trainings = fitnessService.getUserTrainings(userId);
         return textBuilder.createUserTrainingsText(trainings);
     }
 

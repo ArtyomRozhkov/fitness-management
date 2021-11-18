@@ -1,5 +1,6 @@
 package com.rozhkov.fitness.management.telegram.message;
 
+import com.rozhkov.fitness.management.telegram.i18n.TextBuilder;
 import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -13,6 +14,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
  */
 @RequiredArgsConstructor
 public abstract class BaseMessageHandler implements MessageHandler {
+
+    protected final TextBuilder textBuilder;
 
     private final MessageHandler nextMessageHandler;
 

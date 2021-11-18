@@ -11,14 +11,12 @@ import java.time.LocalDate;
 public class ShowTodayTimetableMessageHandler extends BaseMessageHandler {
 
     private final FitnessService fitnessService;
-    private final TextBuilder textBuilder;
 
     public ShowTodayTimetableMessageHandler(FitnessService fitnessService,
                                             TextBuilder textBuilder,
                                             MessageHandler nextMessageHandler) {
-        super(nextMessageHandler);
+        super(textBuilder, nextMessageHandler);
         this.fitnessService = fitnessService;
-        this.textBuilder = textBuilder;
     }
 
     @Override
