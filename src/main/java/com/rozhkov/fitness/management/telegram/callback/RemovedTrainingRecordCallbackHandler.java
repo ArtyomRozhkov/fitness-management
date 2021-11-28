@@ -18,7 +18,7 @@ public class RemovedTrainingRecordCallbackHandler extends BaseCallbackHandler {
 
     @Override
     protected EditMessageText handle(Callback callback) {
-        RemovedTrainingRecordData data = callbackHelper.retrieveCallbackData(callback.getCallbackData(), RemovedTrainingRecordData.class);
+        RemovedTrainingRecordData data = getActionData(callback, RemovedTrainingRecordData.class);
         Training training = fitnessService.getTraining(data.getTimetableId());
         String answer = textBuilder.createRemoveTrainingRecordText(training, data.getDate());
 

@@ -3,6 +3,7 @@ package com.rozhkov.fitness.management.telegram.message;
 import com.rozhkov.fitness.management.service.FitnessService;
 import com.rozhkov.fitness.management.service.Training;
 import com.rozhkov.fitness.management.telegram.action.Action;
+import com.rozhkov.fitness.management.telegram.action.ActionWithoutMetadata;
 import com.rozhkov.fitness.management.telegram.callback.CallbackHelper;
 import com.rozhkov.fitness.management.telegram.i18n.TextBuilder;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -47,9 +48,11 @@ public class ShowMyTrainingRecordMessageHandler extends BaseMessageHandler {
     }
 
     private InlineKeyboardMarkup createInlineReplyDatesKeyboard() {
+        var actionData = new ActionWithoutMetadata()
+                .setAction(Action.REMOVE_TRAINING_RECORD);
         return InlineKeyboardMarkup.builder()
                 .keyboard(List.of(List.of(
-                        callbackHelper.createInlineButton(Action.REMOVE_TRAINING_RECORD.getCaption(), Action.REMOVE_TRAINING_RECORD))))
+                        callbackHelper.createInlineButton(Action.REMOVE_TRAINING_RECORD.getCaption(), actionData))))
                 .build();
     }
 }

@@ -34,8 +34,7 @@ public class ChosenDateForTrainingCallbackHandler extends BaseCallbackHandler {
     }
 
     private InlineKeyboardMarkup createInlineReplyTrainingList(Callback callback) {
-        ChosenDateForTrainingData callbackData =
-                callbackHelper.retrieveCallbackData(callback.getCallbackData(), ChosenDateForTrainingData.class);
+        ChosenDateForTrainingData callbackData = getActionData(callback, ChosenDateForTrainingData.class);
 
         LocalDate trainingDate = callbackData.getDate();
         List<Training> trainings = fitnessService.getTrainingTimetableOnDate(trainingDate);

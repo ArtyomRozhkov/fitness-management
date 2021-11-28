@@ -18,7 +18,7 @@ public class ChosenTrainingCallbackHandler extends BaseCallbackHandler {
 
     @Override
     protected EditMessageText handle(Callback callback) {
-        ChosenTrainingData trainingData = callbackHelper.retrieveCallbackData(callback.getCallbackData(), ChosenTrainingData.class);
+        ChosenTrainingData trainingData = getActionData(callback, ChosenTrainingData.class);
         Training training = fitnessService.getTraining(trainingData.getTimetableId());
         String answer = textBuilder.createRecordedForTrainingText(trainingData.getDate(), training);
 

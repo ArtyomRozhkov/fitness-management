@@ -1,7 +1,8 @@
 package com.rozhkov.fitness.management.telegram;
 
+import com.rozhkov.fitness.management.telegram.action.ActionData;
+import com.rozhkov.fitness.management.telegram.action.ActionWithoutMetadata;
 import com.rozhkov.fitness.management.telegram.callback.Callback;
-import com.rozhkov.fitness.management.telegram.callback.CallbackData;
 import com.rozhkov.fitness.management.telegram.callback.CallbackHandler;
 import com.rozhkov.fitness.management.telegram.callback.CallbackHelper;
 import com.rozhkov.fitness.management.telegram.message.MessageHandler;
@@ -79,13 +80,15 @@ public class TelegramBotHandler extends TelegramLongPollingBot {
     private Callback createCallback(CallbackQuery callbackQuery) {
         final Integer messageId = callbackQuery.getMessage().getMessageId();
         final String chatId = callbackQuery.getMessage().getChatId().toString();
-        final CallbackData callbackData = callbackHelper.parseCallbackData(callbackQuery.getData());
+        final ActionData actionWithoutMetadata =
+                callbackHelper.parseCallbackData(callbackQuery.getData(), ActionWithoutMetadata.class);
 
         return Callback.builder()
                 .messageId(messageId)
                 .chatId(chatId)
                 .user(callbackQuery.getFrom())
-                .callbackData(callbackData)
+                .action(actionWithoutMetadata.getAction())
+                .data(callbackQuery.getData())
                 .build();
     }
 

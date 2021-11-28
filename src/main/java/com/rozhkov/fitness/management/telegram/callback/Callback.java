@@ -1,5 +1,6 @@
 package com.rozhkov.fitness.management.telegram.callback;
 
+import com.rozhkov.fitness.management.telegram.action.Action;
 import lombok.Builder;
 import lombok.Value;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -12,5 +13,6 @@ public class Callback {
     String chatId;
     User user;
 
-    CallbackData callbackData;
+    Action action;
+    String data;
 }
